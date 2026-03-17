@@ -5,7 +5,7 @@
 #include <string>
 #include <iomanip>
 #include "question.h"
-
+ //Add question.h for za vuprosi za testovete//
 const int QUESTION_COUNT = 30;
 const int TEST_QUESTION_COUNT = 20;
 const int MAX_RESULTS = 100;
