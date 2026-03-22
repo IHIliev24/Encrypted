@@ -56,3 +56,143 @@ int getCategoryIndex(const std::string& category) {
     }
     return 2;
 }
+
+void showLesson() {
+    printTitle("GEO SCHOOL - LESSON");
+    std::cout << "Topic: Important places in Europe and the world\n\n";
+    std::cout << "1. Capitals\n";
+    std::cout << "A capital city is the main city of a country.\n";
+    std::cout << "Examples: Sofia, Berlin, Paris, Rome.\n\n";
+
+    std::cout << "2. Mountains\n";
+    std::cout << "Mountains are high landforms. Some famous mountains are\n";
+    std::cout << "Everest, Musala and mountain ranges like the Alps and Andes.\n\n";
+
+    std::cout << "3. Rivers\n";
+    std::cout << "Rivers are natural streams of water. Important rivers are\n";
+    std::cout << "the Danube, Nile, Rhine and Volga.\n\n";
+
+    std::cout << "This lesson helps students remember capitals, mountains\n";
+    std::cout << "and rivers through short facts.\n";
+}
+
+void showPracticeTasks() {
+    printTitle("GEO SCHOOL - PRACTICE TASKS");
+    std::cout << "1. Write 5 capitals from Europe.\n";
+    std::cout << "2. Name 3 mountain ranges.\n";
+    std::cout << "3. Name 3 rivers in Europe.\n";
+    std::cout << "4. Which river passes through Bulgaria?\n";
+    std::cout << "5. Which mountain is the highest in Bulgaria?\n";
+}
+
+void showHomeworkTasks() {
+    printTitle("GEO SCHOOL - HOMEWORK");
+    std::cout << "1. Make a short table with 5 countries and their capitals.\n";
+    std::cout << "2. Write 3 sentences about Mount Everest.\n";
+    std::cout << "3. Find on a map where the Danube River starts and where it ends.\n";
+    std::cout << "4. Compare the Alps and the Balkan Mountains in 2 sentences.\n";
+}
+
+void buildTest(int variant, int selectedQuestions[TEST_QUESTION_COUNT]) {
+    int start = variant - 1;
+
+    for (int i = 0; i < 8; i++) {
+        selectedQuestions[i] = (start + i) % 10;
+    }
+
+    for (int i = 0; i < 6; i++) {
+        selectedQuestions[8 + i] = 10 + (start + i) % 10;
+    }
+
+    for (int i = 0; i < 6; i++) {
+        selectedQuestions[14 + i] = 20 + (start + i) % 10;
+    }
+}
+
+bool isCorrectAnswer(const std::string& answer, const std::string& correctAnswer) {
+    return answer == correctAnswer ||
+           (correctAnswer == "A" && answer == "a") ||
+           (correctAnswer == "B" && answer == "b") ||
+           (correctAnswer == "C" && answer == "c") ||
+           (correctAnswer == "D" && answer == "d");
+}
+
+int askQuestion(const Question& question) {
+    std::string answer;
+
+    std::cout << question.text << "\n";
+    std::cout << question.optionA << "\n";
+    std::cout << question.optionB << "\n";
+    std::cout << question.optionC << "\n";
+    std::cout << question.optionD << "\n";
+    std::cout << "Your answer: ";
+    std::cin >> answer;
+
+    if (isCorrectAnswer(answer, question.correctAnswer)) {
+        std::cout << "Correct! +" << question.points << " points\n\n";
+        return question.points;
+    }
+
+    std::cout << "Wrong. Correct answer: " << question.correctAnswer << "\n\n";
+    return 0;
+}
+
+int findMaxPoints(const int selectedQuestions[TEST_QUESTION_COUNT]) {
+    int sum = 0;
+
+    for (int i = 0; i < TEST_QUESTION_COUNT; i++) {
+        sum += questionBank[selectedQuestions[i]].points;
+    }
+
+    return sum;
+}
+
+double calculateGrade(int points, int maxPoints) {
+    double percent = 0.0;
+
+    if (maxPoints > 0) {
+        percent = (points * 100.0) / maxPoints;
+    }
+
+    if (percent >= 90.0) {
+        return 6.0;
+    }
+    if (percent >= 75.0) {
+        return 5.0;
+    }
+    if (percent >= 60.0) {
+        return 4.0;
+    }
+    if (percent >= 45.0) {
+        return 3.0;
+    }
+    return 2.0;
+}
+
+void startTest(StudentResult results[], int& resultCount) {
+    if (resultCount >= MAX_RESULTS) {
+        std::cout << "Result list is full.\n";
+        return;
+    }
+
+    StudentResult currentResult;
+    int selectedQuestions[TEST_QUESTION_COUNT];
+    int variant = 1;
+    int maxPoints = 0;
+
+    for (int i = 0; i < 3; i++) {
+        currentResult.categoryPoints[i] = 0;
+        currentResult.categoryMaxPoints[i] = 0;
+    }
+
+    printTitle("GEO SCHOOL - TEST");
+    std::cout << "Student name: ";
+    std::cin.ignore(1000, '\n');
+    std::getline(std::cin, currentResult.name);
+
+    std::cout << "Choose test variant (1, 2 or 3): ";
+    std::cin >> variant;
+
+    if (variant < 1 || variant > 3) {
+        variant = 1;
+    }
