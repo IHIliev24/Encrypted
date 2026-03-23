@@ -196,3 +196,120 @@ void startTest(StudentResult results[], int& resultCount) {
     if (variant < 1 || variant > 3) {
         variant = 1;
     }
+
+    buildTest(variant, selectedQuestions);
+    currentResult.totalPoints = 0;
+
+    for (int i = 0; i < TEST_QUESTION_COUNT; i++) {
+        Question currentQuestion = questionBank[selectedQuestions[i]];
+        int categoryIndex = getCategoryIndex(currentQuestion.category);
+        int earnedPoints = 0;
+
+        std::cout << "Question " << (i + 1) << " of " << TEST_QUESTION_COUNT
+                  << " | Category: " << currentQuestion.category << "\n";
+
+        currentResult.categoryMaxPoints[categoryIndex] += currentQuestion.points;
+        earnedPoints = askQuestion(currentQuestion);
+        currentResult.categoryPoints[categoryIndex] += earnedPoints;
+        currentResult.totalPoints += earnedPoints;
+    }
+
+    maxPoints = findMaxPoints(selectedQuestions);
+    currentResult.grade = calculateGrade(currentResult.totalPoints, maxPoints);
+
+    printLine();
+    std::cout << "Student: " << currentResult.name << "\n";
+    std::cout << "Points: " << currentResult.totalPoints << " / " << maxPoints << "\n";
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "Grade: " << currentResult.grade << "\n";
+    printLine();
+
+    results[resultCount] = currentResult;
+    resultCount++;
+}
+
+void showStatistics(const StudentResult results[], int resultCount) {
+    if (resultCount == 0) {
+        printTitle("GEO SCHOOL - STATISTICS");
+        std::cout << "No tests taken yet.\n";
+        return;
+    }
+
+    int bestIndex = 0;
+    int worstIndex = 0;
+    double sumGrades = 0.0;
+    int sumPoints = 0;
+    int totalCategoryPoints[3] = {0, 0, 0};
+    int totalCategoryMaxPoints[3] = {0, 0, 0};
+
+    for (int i = 0; i < resultCount; i++) {
+        if (results[i].totalPoints > results[bestIndex].totalPoints) {
+            bestIndex = i;
+        }
+
+        if (results[i].totalPoints < results[worstIndex].totalPoints) {
+            worstIndex = i;
+        }
+
+        sumGrades += results[i].grade;
+        sumPoints += results[i].totalPoints;
+
+        for (int j = 0; j < 3; j++) {
+            totalCategoryPoints[j] += results[i].categoryPoints[j];
+            totalCategoryMaxPoints[j] += results[i].categoryMaxPoints[j];
+        }
+    }
+
+    int bestCategoryIndex = 0;
+    int worstCategoryIndex = 0;
+    double bestPercent = 0.0;
+    double worstPercent = 100.0;
+
+    for (int i = 0; i < 3; i++) {
+        double percent = 0.0;
+
+        if (totalCategoryMaxPoints[i] > 0) {
+            percent = (totalCategoryPoints[i] * 100.0) / totalCategoryMaxPoints[i];
+        }
+
+        if (i == 0 || percent > bestPercent) {
+            bestPercent = percent;
+            bestCategoryIndex = i;
+        }
+
+        if (i == 0 || percent < worstPercent) {
+            worstPercent = percent;
+            worstCategoryIndex = i;
+        }
+    }
+
+    printTitle("GEO SCHOOL - STATISTICS");
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "Tests taken: " << resultCount << "\n\n";
+
+    std::cout << "Best student: " << results[bestIndex].name
+              << " with " << results[bestIndex].totalPoints << " points\n";
+    std::cout << "Weakest student: " << results[worstIndex].name
+              << " with " << results[worstIndex].totalPoints << " points\n\n";
+
+    std::cout << "Average points: " << (sumPoints * 1.0 / resultCount) << "\n";
+    std::cout << "Average grade: " << (sumGrades / resultCount) << "\n\n";
+
+    std::cout << std::left << std::setw(15) << "Category"
+              << std::setw(15) << "Success %" << "\n";
+    printLine();
+
+    for (int i = 0; i < 3; i++) {
+        double percent = 0.0;
+        if (totalCategoryMaxPoints[i] > 0) {
+            percent = (totalCategoryPoints[i] * 100.0) / totalCategoryMaxPoints[i];
+        }
+
+        std::cout << std::left << std::setw(15) << categoryNames[i]
+                  << std::setw(15) << percent << "\n";
+    }
+
+    printLine();
+    std::cout << "Best category: " << categoryNames[bestCategoryIndex] << "\n";
+    std::cout << "Weakest category: " << categoryNames[worstCategoryIndex] << "\n";
+}
