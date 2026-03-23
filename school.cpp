@@ -1,5 +1,5 @@
 #include "school.h"
-
+// Array with all questions (capitals, mountains, rivers)
 Question questionBank[QUESTION_COUNT] = {
     {"Capitals", "What is the capital of Bulgaria?", "A) Sofia", "B) Varna", "C) Plovdiv", "D) Burgas", "A", 1},
     {"Capitals", "What is the capital of Germany?", "A) Munich", "B) Berlin", "C) Hamburg", "D) Bonn", "B", 1},
@@ -40,13 +40,13 @@ std::string categoryNames[3] = {"Capitals", "Mountains", "Rivers"};
 void printLine() {
     std::cout << "------------------------------------------------------------\n";
 }
-
+// Prints a title with lines above and below
 void printTitle(const std::string& title) {
     printLine();
     std::cout << title << "\n";
     printLine();
 }
-
+// Returns index of category (used for statistics)
 int getCategoryIndex(const std::string& category) {
     if (category == "Capitals") {
         return 0;
@@ -56,7 +56,7 @@ int getCategoryIndex(const std::string& category) {
     }
     return 2;
 }
-
+// Shows lesson theory
 void showLesson() {
     printTitle("GEO SCHOOL - LESSON");
     std::cout << "Topic: Important places in Europe and the world\n\n";
@@ -75,7 +75,7 @@ void showLesson() {
     std::cout << "This lesson helps students remember capitals, mountains\n";
     std::cout << "and rivers through short facts.\n";
 }
-
+// Shows practice tasks
 void showPracticeTasks() {
     printTitle("GEO SCHOOL - PRACTICE TASKS");
     std::cout << "1. Write 5 capitals from Europe.\n";
@@ -84,7 +84,7 @@ void showPracticeTasks() {
     std::cout << "4. Which river passes through Bulgaria?\n";
     std::cout << "5. Which mountain is the highest in Bulgaria?\n";
 }
-
+// Shows homework tasks
 void showHomeworkTasks() {
     printTitle("GEO SCHOOL - HOMEWORK");
     std::cout << "1. Make a short table with 5 countries and their capitals.\n";
@@ -92,7 +92,7 @@ void showHomeworkTasks() {
     std::cout << "3. Find on a map where the Danube River starts and where it ends.\n";
     std::cout << "4. Compare the Alps and the Balkan Mountains in 2 sentences.\n";
 }
-
+// Builds test based on selected variant
 void buildTest(int variant, int selectedQuestions[TEST_QUESTION_COUNT]) {
     int start = variant - 1;
 
